@@ -1,6 +1,10 @@
 import Head from 'next/head'
+import { Input } from '../components/ui/Input'
+
+import { useState } from 'react'
 
 export default function Home() {
+  const [isLoading, setIsLoading] = useState<boolean>(true)
   return (
     <>
       <Head>
@@ -9,11 +13,12 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main>
-        <div>
-          <p className='font-semibold'>
-            Hello World!
-          </p>
+      <main className='flex justify-center items-center w-full h-screen min-w-min pt-16 pb-6 px-6 bg-[#1F2937]'>
+        <div className='flex flex-col gap-8'>
+          <Input label='Número do Cartão' placeholder='**** **** **** ****' />
+          <Input label='Nome do titular' placeholder='Nome como está no cartão'/>
+          <Input label='Validade' variant='sm' placeholder='mm/aa' />
+          <Input label='CCV' variant='xsm' placeholder='***' test='pop'/>
         </div>
       </main>
      
