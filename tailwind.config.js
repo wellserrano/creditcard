@@ -10,6 +10,9 @@ module.exports = {
       fontFamily: {
         sans: ['var(--font-source-sans-pro)', ...fontFamily.sans],
       },
+      borderRadius: {
+        ellipse: '50%'
+      }
     },
   },
   plugins: [],
