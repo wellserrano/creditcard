@@ -1,6 +1,12 @@
 import Head from 'next/head'
+import Image from 'next/image'
 
 import { useState } from 'react'
+
+import shield from 'public/ShieldCheck.svg'
+
+import { Input } from '@/components/ui/Input'
+import { Button } from '@/components/ui/Button'
 import { CreditCard } from '@/components/ui/CreditCard'
 
 export default function Home() {
@@ -15,10 +21,29 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className='flex justify-center items-center w-full h-screen min-w-min pt-16 pb-6 px-6 bg-[#1F2937]'>
-        <div className=''>
-          <CreditCard side='front' cardNumber='436346236'/>
+      <main className='bg-[#111827]'>
+        <div className='flex flex-col w-full min-h-screen justify-center items-center bg-[#1F2937] px-6 pt-10 pb-6'>
+          
+          <CreditCard className='shadow-2xl mb-12' side='front'  />
+
+          <form action="" className='flex flex-col gap-6'>
+
+            <Input label='Número do cartão' placeholder='**** **** **** ****'/> 
+            <Input label='Nome do titular' placeholder='Nome como está no cartão'/> 
+            <div className='flex flex-row gap-4'>
+              <Input label='Validade' placeholder='mm/aa' variant='sm' />
+              <Input label='CVV' placeholder='***' variant='xsm'/> 
+            </div>
+
+            <div className='flex justify-center items-center mb-11 gap-2 text-[#E5E7EB] text-sm font-normal leading-4'>
+              <Image src={shield} alt='shield icon' height={24} width={24}/><span>Seus dados estão seguros</span>
+            </div>
+
+            <Button>Adicionar cartão</Button>
+
+          </form>
         </div>
+
         
       </main>
      
