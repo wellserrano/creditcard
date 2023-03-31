@@ -15,7 +15,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className='flex justify-center items-center w-full h-screen min-w-min pt-16 pb-6 px-6 bg-[#1F2937]'>
-        <div className='flex flex-col gap-8'>
+        <div className=''>
           <CreditCard />
         </div>
         
