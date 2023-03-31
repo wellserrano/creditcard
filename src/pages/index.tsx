@@ -5,6 +5,7 @@ import { CreditCard } from '@/components/ui/CreditCard'
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [input, setInput] = useState<string>('')
 
   return (
     <>
@@ -16,7 +17,7 @@ export default function Home() {
       </Head>
       <main className='flex justify-center items-center w-full h-screen min-w-min pt-16 pb-6 px-6 bg-[#1F2937]'>
         <div className=''>
-          <CreditCard />
+          <CreditCard side='front' cardNumber='436346236'/>
         </div>
         
       </main>
