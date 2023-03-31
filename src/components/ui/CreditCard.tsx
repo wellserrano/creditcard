@@ -64,7 +64,7 @@ const CreditCard = React.forwardRef<HTMLDivElement, CreditCardProps>(
             <Image src={visa} height={32} width={32} alt='card flag' />
             <Image src={contactless} height={24} width={24} alt='contactless payment symbol' />
           </div>
-          <div>
+          <div className='mb-2'>
             <p className='tracking-[4px] text-[#F9FAFB]'>4716803902&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;</p>
           </div>
           <div className='flex w-full justify-between'>
