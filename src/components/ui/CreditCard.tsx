@@ -60,14 +60,14 @@ const CreditCard = React.forwardRef<HTMLDivElement, CreditCardProps>(
         side === 'front' 
         ? 
         <div className='absolute z-50 flex flex-col w-full pt-4 px-6 pb-6 '>
-          <div className='flex justify-between w-full mb-10'>
-            <Image src={visa} height={32} width={32} alt='card flag' />
-            <Image src={contactless} height={24} width={24} alt='contactless payment symbol' />
+          <div className='flex justify-between mb-10'>
+            <Image src={visa} width={0} height={0} alt='card flag' />
+            <Image src={contactless} width={0} height={0} alt='contactless payment symbol' />
           </div>
           <div className='mb-2'>
             <p className='tracking-[4px] text-[#F9FAFB]'>4716803902&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;</p>
           </div>
-          <div className='flex w-full justify-between'>
+          <div className='flex w-full h-fit justify-between'>
             <span className='w-3/4 text-[#F9FAFB] opacity-50 font-normal'>Seu nome aqui</span>
             <span className='text-[#F9FAFB] opacity-50 font-normal tracking-[4px]'>&#x2022;&#x2022;/&#x2022;&#x2022;</span>
           </div>

@@ -1,7 +1,8 @@
 import Head from 'next/head'
 import Image from 'next/image'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useMediaQuery } from '@/lib/utils/hooks/useMediaQuery'
 
 import shield from 'public/ShieldCheck.svg'
 
@@ -13,6 +14,8 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [input, setInput] = useState<string>('')
 
+  const mediaQuery = useMediaQuery('(min-width: 768px)')
+
   return (
     <>
       <Head>
@@ -21,25 +24,48 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className='bg-[#111827]'>
-        <div className='flex flex-col w-full min-h-screen justify-center items-center bg-[#1F2937] px-6 pt-10 pb-6'>
+      <main className='flex w-full min-h-screen justify-center items-center bg-[#111827]'>
+        <div className='
+          flex flex-col 
+          justify-center items-center
+          w-full min-h-screen
+          px-6 pt-10 pb-6
+          bg-[#1F2937]
+          md:max-w-3xl md:min-h-fit md:rounded-lg'
+        >
           
-          <CreditCard className='shadow-2xl mb-12' side='front'  />
 
-          <form action="" className='flex flex-col gap-6'>
+          <form action="" className='flex flex-col gap-12  justify-center items-center'>
 
-            <Input label='Número do cartão' placeholder='**** **** **** ****'/> 
-            <Input label='Nome do titular' placeholder='Nome como está no cartão'/> 
-            <div className='flex flex-row gap-4'>
-              <Input label='Validade' placeholder='mm/aa' variant='sm' />
-              <Input label='CVV' placeholder='***' variant='xsm'/> 
+            <div className='flex flex-col md:flex-row-reverse md:gap-16'>
+
+              <div className='flex justify-center items-center md:flex-col '>
+                <CreditCard className='shadow-2xl mb-12 md:mb-8' side='front' />
+                {
+                  mediaQuery &&
+                  <div className='flex justify-center items-center gap-2 text-[#E5E7EB] text-sm font-normal leading-4'>
+                    <Image src={shield} alt='shield icon' height={24} width={24}/><span>Seus dados estão seguros</span>
+                  </div>
+                }
+              </div>
+
+              <div className='flex flex-col gap-6'>
+                <Input label='Número do cartão' placeholder='**** **** **** ****'/> 
+                <Input label='Nome do titular' placeholder='Nome como está no cartão'/> 
+                <div className='flex flex-row gap-4'>
+                  <Input label='Validade' placeholder='mm/aa' variant='sm' />
+                  <Input label='CVV' placeholder='***' variant='xsm'/> 
+                </div>
+                {
+                  !mediaQuery &&
+                  <div className='flex justify-center items-center mt-4 gap-2 text-[#E5E7EB] text-sm font-normal leading-4'>
+                    <Image src={shield} alt='shield icon' height={24} width={24}/><span>Seus dados estão seguros</span>
+                  </div>
+                }
+              </div>
             </div>
 
-            <div className='flex justify-center items-center mb-11 gap-2 text-[#E5E7EB] text-sm font-normal leading-4'>
-              <Image src={shield} alt='shield icon' height={24} width={24}/><span>Seus dados estão seguros</span>
-            </div>
-
-            <Button>Adicionar cartão</Button>
+            <Button size={ mediaQuery ? 'lg' : 'default' }> Adicionar cartão</Button>
 
           </form>
         </div>
