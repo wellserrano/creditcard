@@ -17,6 +17,8 @@ export default function Home() {
   const [cardNumber, setCardNumber] = useState<string>('')
   const [name, setName] = useState<string>('')
   const [expirationDate, setExpirationDate] = useState<string>('')
+  const [cvv, setCVV] = useState<string>('')
+  const [activeCardSide, setActiveCardSide] = useState<'front'|'back'>('front')
 
   const handleExpirationDate = (e: ChangeEvent<HTMLInputElement>) => {
     const maskExpirationDate = ((value) => {
@@ -69,10 +71,11 @@ export default function Home() {
               <div className='flex justify-center items-center md:flex-col '>
                 <CreditCard 
                   className='shadow-2xl mb-12 md:mb-8' 
-                  side='front'
+                  side={ activeCardSide }
                   cardNumber={ cardNumber }
                   name={ name }
                   expirationDate={ expirationDate }
+                  cvv={ cvv }
                 />
                 {
                   matchMediaQuery &&
@@ -106,7 +109,16 @@ export default function Home() {
                     onChange={ handleExpirationDate }
                     value={ expirationDate.replace(/(0[0-9]|1[0-2])([0-9]{2})/g, "$1/$2") }
                   />
-                  <Input label='CVV' placeholder='***' variant='xsm'/> 
+                  <Input 
+                    label='CVV' 
+                    placeholder='***' 
+                    variant='xsm'
+                    onChange={ e => setCVV(e.target.value.replace(/\D/, "")) }
+                    value={ cvv }
+                    maxLength={ 3 }
+                    onFocus={ () => setActiveCardSide('back') }
+                    onBlur={ () => setActiveCardSide('front') }
+                  /> 
                 </div>
                 {
                   !matchMediaQuery &&

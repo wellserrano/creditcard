@@ -86,7 +86,7 @@ const CreditCard = React.forwardRef<HTMLDivElement, CreditCardProps>(
           <div className='flex justify-end items-center gap-2'>
             <div className='flex w-52 h-8 justify-end items-center p-3 rounded-md bg-[#D1D5DB]'>
               <p className='tracking-[4px]'>
-                { cvv ? cvv : <span className='text-[#111827] opacity-50'>&#x2022;&#x2022;&#x2022;</span> }
+                { cvv ? cvv : <span className='text-[#111827] opacity-50'>{ cvv?.padEnd(3, '\u2022') }</span> }
               </p>
             </div>
             <p className='text-[#E5E7EB] text-sm leading-4 font-normal'>CVV</p>
