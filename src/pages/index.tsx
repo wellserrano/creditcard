@@ -1,11 +1,62 @@
 import Head from 'next/head'
+import Image from 'next/image'
 
-import { useState } from 'react'
+import { useState, useEffect, ChangeEvent, FormEvent } from 'react'
+import { useMediaQuery } from '@/lib/utils/hooks/useMediaQuery'
+
+import shield from 'public/ShieldCheck.svg'
+
+import { Input } from '@/components/ui/Input'
+import { Button } from '@/components/ui/Button'
 import { CreditCard } from '@/components/ui/CreditCard'
 
 export default function Home() {
+  const [cvv, setCVV] = useState<string>('')
+  const [name, setName] = useState<string>('')
+  const [cardNumber, setCardNumber] = useState<string>('')
   const [isLoading, setIsLoading] = useState<boolean>(true)
-  const [input, setInput] = useState<string>('')
+  const [expirationDate, setExpirationDate] = useState<string>('')
+  const [matchMediaQuery, setmatchMediaQuery] = useState<boolean>(false)
+  const [activeCardSide, setActiveCardSide] = useState<'front'|'back'>('front')
+
+  const handleExpirationDate = (e: ChangeEvent<HTMLInputElement>) => {
+    const maskExpirationDate = ((value) => {
+      let formattedValue = value.replace(/\D/g, "");
+      
+      if(formattedValue.length > 3) {
+        const isDateValid = formattedValue.match(/(0[0-9]|1[0-2])([0-9]{2})/g)
+
+        if (isDateValid) {
+          formattedValue = formattedValue
+            .trim()
+            .substring(0,4);
+        } else {
+          alert('Confira se a data inserida está no padrão Mês/Ano (mm/aa)')
+          return ''
+        }
+      }
+      
+      return formattedValue
+    })(e.target.value);
+    
+    setExpirationDate(maskExpirationDate)
+  }
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const response = await fetch('/api/registerCreditCard', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ cardNumber, name, expirationDate, cvv })
+    })
+    const data = await response.json();
+    console.log(data)
+  }
+
+  const mediaQuery = useMediaQuery('(min-width: 768px)')
+  useEffect(() => { setmatchMediaQuery(mediaQuery) }, [mediaQuery])
 
   return (
     <>
@@ -15,10 +66,89 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className='flex justify-center items-center w-full h-screen min-w-min pt-16 pb-6 px-6 bg-[#1F2937]'>
-        <div className=''>
-          <CreditCard side='front' cardNumber='436346236'/>
+      <main className='flex w-full min-h-screen justify-center items-center bg-[#111827]'>
+        <div className='
+          flex flex-col 
+          justify-center items-center
+          w-full min-h-screen
+          px-6 pt-10 pb-6
+          bg-[#1F2937]
+          md:max-w-3xl md:min-h-fit md:rounded-lg'
+        >
+        
+          <form onSubmit={ handleSubmit } className='flex flex-col gap-12  justify-center items-center'>
+
+            <div className='flex flex-col md:flex-row-reverse md:gap-16'>
+
+              <div className='flex justify-center items-center md:flex-col '>
+                <CreditCard 
+                  className='shadow-2xl mb-12 md:mb-8' 
+                  side={ activeCardSide }
+                  cardNumber={ cardNumber }
+                  name={ name }
+                  expirationDate={ expirationDate }
+                  cvv={ cvv }
+                />
+                {
+                  matchMediaQuery &&
+                  <div className='flex justify-center items-center gap-2 text-[#E5E7EB] text-sm font-normal leading-4'>
+                    <Image src={shield} alt='shield icon' height={0} width={0}/>
+                    <span>Seus dados estão seguros</span>
+                  </div>
+                }
+              </div>
+
+              <div className='flex flex-col gap-6 '>
+                <Input 
+                  label='Número do cartão' 
+                  placeholder='**** **** **** ****'
+                  onChange={ e => setCardNumber(e.target.value.replace(/\D/g, "").trim()) }
+                  value={ cardNumber.replace(/(\d{4})/g, "$1 ").trim() }
+                  maxLength={ 19 }
+                  validateInput={() => cardNumber.length < 16 }
+                /> 
+
+                <Input 
+                  label='Nome do titular' 
+                  placeholder='Nome como está no cartão'
+                  onChange={ e => setName(e.target.value) }
+                  value={ name }
+                /> 
+                <div className='flex flex-row gap-4'>
+                  <Input 
+                    label='Validade' 
+                    placeholder='mm/aa'
+                    variant='sm' 
+                    onChange={ handleExpirationDate }
+                    value={ expirationDate.replace(/(0[0-9]|1[0-2])([0-9]{2})/g, "$1/$2") }
+                  />
+                  <Input 
+                    label='CVV' 
+                    placeholder='***' 
+                    variant='xsm'
+                    onChange={ e => setCVV(e.target.value.replace(/\D/, "")) }
+                    value={ cvv }
+                    maxLength={ 3 }
+                    onFocus={ () => setActiveCardSide('back') }
+                    onBlur={ () => setActiveCardSide('front') }
+                    hint
+                  /> 
+                </div>
+                {
+                  !matchMediaQuery &&
+                  <div className='flex justify-center items-center mt-4 gap-2 text-[#E5E7EB] text-sm font-normal leading-4'>
+                    <Image src={shield} alt='shield icon' height={24} width={24}/><span>Seus dados estão seguros</span>
+                  </div>
+                }
+              </div>
+
+            </div>
+
+            <Button type='submit' size={ matchMediaQuery ? 'lg' : 'default' }> Adicionar cartão</Button>
+
+          </form>
         </div>
+
         
       </main>
      

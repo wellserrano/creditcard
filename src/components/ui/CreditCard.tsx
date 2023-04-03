@@ -1,10 +1,13 @@
 import * as React from 'react'
 import Image from 'next/image'
+import clsx from 'clsx'
 
 import { cn } from '../../lib/utils/cn'
 import { cva, VariantProps } from 'class-variance-authority'
 
+import elo from 'public/elo.svg'
 import visa from 'public/visa.svg'
+import master from 'public/master.svg'
 import contactless from 'public/ContactlessPayment.svg'
 
 const creditCardVariants = cva(
@@ -19,33 +22,37 @@ extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof creditCardVari
   side: 'front'|'back'
   cvv?: string
   cardNumber?: string
+  name?: string
+  expirationDate?: string
 }
 
 const CreditCard = React.forwardRef<HTMLDivElement, CreditCardProps>(
-({ className, cvv, side, cardNumber, ...props }, ref) => {
-  const [cardFlag, setCardFlag] = React.useState<'visa'|'master'|'elo'|null>(null)
+({ className, cvv, side, cardNumber, name, expirationDate, ...props }, ref) => {
+  const [cardFlag, setCardFlag] = React.useState(visa)
 
-  const visaRegex = /^4[0-9]{12}(?:[0-9]{3})?$/
-  const mastercardRegex = /^5[1-5][0-9]{14}$/
-  const eloRegex = /^(4011|4012|5017|5020|5038|6304|6703|6708|6759|6761|6763)[0-9]{12}(?:[0-9]{3})?$/
+  React.useEffect(() => {
+    if (!cardNumber) return
 
-  // if (cardNumber !== undefined) {
-  //   if (visaRegex.test(cardNumber)) {
-  //     setCardFlag("visa");
-  //   } else if (mastercardRegex.test(cardNumber)) {
-  //     setCardFlag("master");
-  //   } else if (eloRegex.test(cardNumber)) {
-  //     setCardFlag("elo");
-  //   } else {
-  //     setCardFlag(null);
-  //   }
-  // }
+    const visaRegex = /^4[0-9]{12}(?:[0-9]{3})?$/
+    const mastercardRegex = /^5[1-5][0-9]{14}$/
+    const eloRegex = /^(4011|4012|5017|5020|5038|6304|6703|6708|6759|6761|6763)[0-9]{12}(?:[0-9]{3})?$/
 
-  // console.log(cardType)
+    const isVisa = visaRegex.test(cardNumber)
+    const isMaster = mastercardRegex.test(cardNumber)
+    const isElo = eloRegex.test(cardNumber)
+
+    if (isVisa) setCardFlag(visa)
+    else if (isMaster) setCardFlag(master)
+    else if (isElo) setCardFlag(elo)
+
+  }, [cardFlag, cardNumber])
 
   return (
     <div
-     className={cn(creditCardVariants({ className }))}
+     className={cn(creditCardVariants({ className }), {
+      'transition-all duration-500 transform -scale-x-100': side === 'back',
+      'transition-all duration-500 transform scale-x-100': side === 'front',
+     })}
      ref={ ref }
     >
       {/* blurred background */}
@@ -57,24 +64,43 @@ const CreditCard = React.forwardRef<HTMLDivElement, CreditCardProps>(
       <div className='absolute z-30 top-28 -left-16 rounded-ellipse bg-[#2DD4BF]   w-32 h-20 rotate-45' />
 
       {
-        side === 'front' 
+        side === 'front'
         ? 
         <div className='absolute z-50 flex flex-col w-full pt-4 px-6 pb-6 '>
           <div className='flex justify-between w-full mb-10'>
-            <Image src={visa} height={32} width={32} alt='card flag' />
+            <Image src={cardFlag} height={32} width={32} alt='card flag' />
             <Image src={contactless} height={24} width={24} alt='contactless payment symbol' />
           </div>
-          <div>
-            <p className='tracking-[4px] text-[#F9FAFB]'>4716803902&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;</p>
+          <div className='mb-2'>
+            <p className='tracking-[4px] text-[#F9FAFB]'>
+              { cardNumber?.padEnd(16, '\u2022').replace(/(.{4})/g, "$1 ").trim() }
+            </p>
           </div>
           <div className='flex w-full justify-between'>
-            <span className='w-3/4 text-[#F9FAFB] opacity-50 font-normal'>Seu nome aqui</span>
-            <span className='text-[#F9FAFB] opacity-50 font-normal tracking-[4px]'>&#x2022;&#x2022;/&#x2022;&#x2022;</span>
+            <span className={ clsx('w-3/4 text-[#F9FAFB] font-normal', 
+              {'opacity-50': name?.length === 0,
+              'opacity-100' : name?.length !== 0})}
+            >
+              { name ? name : 'Seu nome aqui' }
+            </span>
+            <span className={ clsx('text-[#F9FAFB] font-normal tracking-[4px]', {
+              'opacity-50': expirationDate?.length === 0,
+              'opacity-100' : expirationDate?.length !== 0
+            })}>
+              { 
+                expirationDate 
+                ? expirationDate.padEnd(4, '\u2022').replace(/(0[0-9]|1[0-2]|\u2022)([0-9]|\u2022{2})/g, "$1/$2").trim() 
+                : '\u2022\u2022/\u2022\u2022'}
+            </span>
           </div>
         </div>
 
-        : 
-        <div className='absolute flex flex-col justify-center items-center gap-12 z-50 w-full'>
+        : //conditionally rendering back side of the card
+        <div className={clsx('absolute flex flex-col justify-center items-center gap-12 z-50 w-full',
+          {
+            '-scale-x-100': side === 'back',
+          }
+         )}>
           {/* magnetic bar */}
             <div className='mt-4 bg-[#111827] w-full h-8' />
 
@@ -82,7 +108,7 @@ const CreditCard = React.forwardRef<HTMLDivElement, CreditCardProps>(
           <div className='flex justify-end items-center gap-2'>
             <div className='flex w-52 h-8 justify-end items-center p-3 rounded-md bg-[#D1D5DB]'>
               <p className='tracking-[4px]'>
-                { cvv ? cvv : <span className='text-[#111827] opacity-50'>&#x2022;&#x2022;&#x2022;</span> }
+                { cvv ? cvv : <span className='text-[#111827] opacity-50'>{ cvv?.padEnd(3, '\u2022') }</span> }
               </p>
             </div>
             <p className='text-[#E5E7EB] text-sm leading-4 font-normal'>CVV</p>
