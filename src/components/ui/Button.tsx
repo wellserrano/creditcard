@@ -8,7 +8,7 @@ import Image from 'next/image'
 
 const buttonVariants = cva(
   `flex justify-center items-center 
-  h-14 py-4 px-12
+  w-80 h-14 py-4 px-12 
   bg-[#9333EA] hover:bg-[#A855F7] 
   text-lg font-semibold text-[#F9FAFB] 
   rounded-md shadow-[0_4px_16px] shadow-black
@@ -20,10 +20,6 @@ const buttonVariants = cva(
       state: {
         default: 'opacity-100',
         disabled: 'opacity-50 hover:bg-[#9333EA]',
-      },
-      size: {
-        default: 'w-80',
-        lg: 'w-[34rem]'
       }
     },
     defaultVariants: {
@@ -38,10 +34,10 @@ extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof butto
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, state, size, children, isLoading, ...props }, ref) => {
+  ({ className, state, children, isLoading, ...props }, ref) => {
     return (
       <button
-        className={cn(buttonVariants({ state, size, className }))}
+        className={cn(buttonVariants({ state, className }))}
         ref={ref}
         disabled={isLoading}
         {...props}
