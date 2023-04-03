@@ -1,8 +1,7 @@
-
 import Head from 'next/head'
 import Image from 'next/image'
 
-import { useState, useEffect, ChangeEvent } from 'react'
+import { useState, useEffect, ChangeEvent, FormEvent } from 'react'
 import { useMediaQuery } from '@/lib/utils/hooks/useMediaQuery'
 
 import shield from 'public/ShieldCheck.svg'
@@ -12,12 +11,12 @@ import { Button } from '@/components/ui/Button'
 import { CreditCard } from '@/components/ui/CreditCard'
 
 export default function Home() {
-  const [isLoading, setIsLoading] = useState<boolean>(true)
-  const [matchMediaQuery, setmatchMediaQuery] = useState<boolean>(false)
-  const [cardNumber, setCardNumber] = useState<string>('')
-  const [name, setName] = useState<string>('')
-  const [expirationDate, setExpirationDate] = useState<string>('')
   const [cvv, setCVV] = useState<string>('')
+  const [name, setName] = useState<string>('')
+  const [cardNumber, setCardNumber] = useState<string>('')
+  const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [expirationDate, setExpirationDate] = useState<string>('')
+  const [matchMediaQuery, setmatchMediaQuery] = useState<boolean>(false)
   const [activeCardSide, setActiveCardSide] = useState<'front'|'back'>('front')
 
   const handleExpirationDate = (e: ChangeEvent<HTMLInputElement>) => {
@@ -43,6 +42,19 @@ export default function Home() {
     setExpirationDate(maskExpirationDate)
   }
 
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const response = await fetch('/api/registerCreditCard', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ cardNumber, name, expirationDate, cvv })
+    })
+    const data = await response.json();
+    console.log(data)
+  }
+
   const mediaQuery = useMediaQuery('(min-width: 768px)')
   useEffect(() => { setmatchMediaQuery(mediaQuery) }, [mediaQuery])
 
@@ -64,7 +76,7 @@ export default function Home() {
           md:max-w-3xl md:min-h-fit md:rounded-lg'
         >
         
-          <form action="" className='flex flex-col gap-12  justify-center items-center'>
+          <form onSubmit={ handleSubmit } className='flex flex-col gap-12  justify-center items-center'>
 
             <div className='flex flex-col md:flex-row-reverse md:gap-16'>
 
@@ -130,7 +142,7 @@ export default function Home() {
 
             </div>
 
-            <Button size={ matchMediaQuery ? 'lg' : 'default' }> Adicionar cartão</Button>
+            <Button type='submit' size={ matchMediaQuery ? 'lg' : 'default' }> Adicionar cartão</Button>
 
           </form>
         </div>
