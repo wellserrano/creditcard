@@ -105,6 +105,7 @@ export default function Home() {
                   onChange={ e => setCardNumber(e.target.value.replace(/\D/g, "").trim()) }
                   value={ cardNumber.replace(/(\d{4})/g, "$1 ").trim() }
                   maxLength={ 19 }
+                  validateInput={() => cardNumber.length < 16 }
                 /> 
 
                 <Input 
