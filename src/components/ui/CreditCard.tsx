@@ -34,7 +34,10 @@ const CreditCard = React.forwardRef<HTMLDivElement, CreditCardProps>(
 
   return (
     <div
-     className={cn(creditCardVariants({ className }))}
+     className={cn(creditCardVariants({ className }), {
+      'transition-all duration-500 transform -scale-x-100': side === 'back',
+      'transition-all duration-500 transform scale-x-100': side === 'front',
+     })}
      ref={ ref }
     >
       {/* blurred background */}
@@ -46,7 +49,7 @@ const CreditCard = React.forwardRef<HTMLDivElement, CreditCardProps>(
       <div className='absolute z-30 top-28 -left-16 rounded-ellipse bg-[#2DD4BF]   w-32 h-20 rotate-45' />
 
       {
-        side === 'front' 
+        side === 'front'
         ? 
         <div className='absolute z-50 flex flex-col w-full pt-4 px-6 pb-6 '>
           <div className='flex justify-between w-full mb-10'>
@@ -78,7 +81,11 @@ const CreditCard = React.forwardRef<HTMLDivElement, CreditCardProps>(
         </div>
 
         : //conditionally rendering back side of the card
-        <div className='absolute flex flex-col justify-center items-center gap-12 z-50 w-full'>
+        <div className={clsx('absolute flex flex-col justify-center items-center gap-12 z-50 w-full',
+          {
+            '-scale-x-100': side === 'back',
+          }
+         )}>
           {/* magnetic bar */}
             <div className='mt-4 bg-[#111827] w-full h-8' />
 
