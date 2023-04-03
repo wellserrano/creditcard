@@ -131,6 +131,7 @@ export default function Home() {
                     maxLength={ 3 }
                     onFocus={ () => setActiveCardSide('back') }
                     onBlur={ () => setActiveCardSide('front') }
+                    hint
                   /> 
                 </div>
                 {
