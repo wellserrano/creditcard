@@ -21,29 +21,16 @@ extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof creditCardVari
   cvv?: string
   cardNumber?: string
   name?: string
+  expirationDate?: string
 }
 
 const CreditCard = React.forwardRef<HTMLDivElement, CreditCardProps>(
-({ className, cvv, side, cardNumber, name, ...props }, ref) => {
+({ className, cvv, side, cardNumber, name, expirationDate, ...props }, ref) => {
   const [cardFlag, setCardFlag] = React.useState<'visa'|'master'|'elo'|null>(null)
 
   const visaRegex = /^4[0-9]{12}(?:[0-9]{3})?$/
   const mastercardRegex = /^5[1-5][0-9]{14}$/
   const eloRegex = /^(4011|4012|5017|5020|5038|6304|6703|6708|6759|6761|6763)[0-9]{12}(?:[0-9]{3})?$/
-
-  // if (cardNumber !== undefined) {
-  //   if (visaRegex.test(cardNumber)) {
-  //     setCardFlag("visa");
-  //   } else if (mastercardRegex.test(cardNumber)) {
-  //     setCardFlag("master");
-  //   } else if (eloRegex.test(cardNumber)) {
-  //     setCardFlag("elo");
-  //   } else {
-  //     setCardFlag(null);
-  //   }
-  // }
-
-  // console.log(cardType)
 
   return (
     <div
@@ -76,17 +63,21 @@ const CreditCard = React.forwardRef<HTMLDivElement, CreditCardProps>(
               {'opacity-50': name?.length === 0,
               'opacity-100' : name?.length !== 0})}
             >
-              {
-                name
-                ? name
-                : 'Seu nome aqui'
-              }
+              { name ? name : 'Seu nome aqui' }
             </span>
-            <span className='text-[#F9FAFB] opacity-50 font-normal tracking-[4px]'>&#x2022;&#x2022;/&#x2022;&#x2022;</span>
+            <span className={ clsx('text-[#F9FAFB] font-normal tracking-[4px]', {
+              'opacity-50': expirationDate?.length === 0,
+              'opacity-100' : expirationDate?.length !== 0
+            })}>
+              { 
+                expirationDate 
+                ? expirationDate.padEnd(4, '\u2022').replace(/(0[0-9]|1[0-2]|\u2022)([0-9]|\u2022{2})/g, "$1/$2").trim() 
+                : '\u2022\u2022/\u2022\u2022'}
+            </span>
           </div>
         </div>
 
-        : 
+        : //conditionally rendering back side of the card
         <div className='absolute flex flex-col justify-center items-center gap-12 z-50 w-full'>
           {/* magnetic bar */}
             <div className='mt-4 bg-[#111827] w-full h-8' />

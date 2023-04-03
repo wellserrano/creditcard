@@ -2,7 +2,7 @@
 import Head from 'next/head'
 import Image from 'next/image'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, ChangeEvent } from 'react'
 import { useMediaQuery } from '@/lib/utils/hooks/useMediaQuery'
 
 import shield from 'public/ShieldCheck.svg'
@@ -15,7 +15,31 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [matchMediaQuery, setmatchMediaQuery] = useState<boolean>(false)
   const [cardNumber, setCardNumber] = useState<string>('')
-  const [name, setName] =useState<string>('')
+  const [name, setName] = useState<string>('')
+  const [expirationDate, setExpirationDate] = useState<string>('')
+
+  const handleExpirationDate = (e: ChangeEvent<HTMLInputElement>) => {
+    const maskExpirationDate = ((value) => {
+      let formattedValue = value.replace(/\D/g, "");
+      
+      if(formattedValue.length > 3) {
+        const isDateValid = formattedValue.match(/(0[0-9]|1[0-2])([0-9]{2})/g)
+
+        if (isDateValid) {
+          formattedValue = formattedValue
+            .trim()
+            .substring(0,4);
+        } else {
+          alert('Confira se a data inserida está no padrão Mês/Ano (mm/aa)')
+          return ''
+        }
+      }
+      
+      return formattedValue
+    })(e.target.value);
+    
+    setExpirationDate(maskExpirationDate)
+  }
 
   const mediaQuery = useMediaQuery('(min-width: 768px)')
   useEffect(() => { setmatchMediaQuery(mediaQuery) }, [mediaQuery])
@@ -48,6 +72,7 @@ export default function Home() {
                   side='front'
                   cardNumber={ cardNumber }
                   name={ name }
+                  expirationDate={ expirationDate }
                 />
                 {
                   matchMediaQuery &&
@@ -74,7 +99,13 @@ export default function Home() {
                   value={ name }
                 /> 
                 <div className='flex flex-row gap-4'>
-                  <Input label='Validade' placeholder='mm/aa' variant='sm' />
+                  <Input 
+                    label='Validade' 
+                    placeholder='mm/aa'
+                    variant='sm' 
+                    onChange={ handleExpirationDate }
+                    value={ expirationDate.replace(/(0[0-9]|1[0-2])([0-9]{2})/g, "$1/$2") }
+                  />
                   <Input label='CVV' placeholder='***' variant='xsm'/> 
                 </div>
                 {
