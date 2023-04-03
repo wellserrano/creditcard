@@ -1,3 +1,4 @@
+
 import Head from 'next/head'
 import Image from 'next/image'
 
@@ -12,9 +13,12 @@ import { CreditCard } from '@/components/ui/CreditCard'
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [matchMediaQuery, setmatchMediaQuery] = useState<boolean>(false)
   const [input, setInput] = useState<string>('')
 
   const mediaQuery = useMediaQuery('(min-width: 768px)')
+
+  useEffect(() => { setmatchMediaQuery(mediaQuery)}, [mediaQuery])
 
   return (
     <>
@@ -33,8 +37,7 @@ export default function Home() {
           bg-[#1F2937]
           md:max-w-3xl md:min-h-fit md:rounded-lg'
         >
-          
-
+        
           <form action="" className='flex flex-col gap-12  justify-center items-center'>
 
             <div className='flex flex-col md:flex-row-reverse md:gap-16'>
@@ -42,14 +45,15 @@ export default function Home() {
               <div className='flex justify-center items-center md:flex-col '>
                 <CreditCard className='shadow-2xl mb-12 md:mb-8' side='front' />
                 {
-                  mediaQuery &&
+                  matchMediaQuery &&
                   <div className='flex justify-center items-center gap-2 text-[#E5E7EB] text-sm font-normal leading-4'>
-                    <Image src={shield} alt='shield icon' height={24} width={24}/><span>Seus dados estão seguros</span>
+                    <Image src={shield} alt='shield icon' height={0} width={0}/>
+                    <span>Seus dados estão seguros</span>
                   </div>
                 }
               </div>
 
-              <div className='flex flex-col gap-6'>
+              <div className='flex flex-col gap-6 '>
                 <Input label='Número do cartão' placeholder='**** **** **** ****'/> 
                 <Input label='Nome do titular' placeholder='Nome como está no cartão'/> 
                 <div className='flex flex-row gap-4'>
@@ -57,12 +61,13 @@ export default function Home() {
                   <Input label='CVV' placeholder='***' variant='xsm'/> 
                 </div>
                 {
-                  !mediaQuery &&
+                  !matchMediaQuery &&
                   <div className='flex justify-center items-center mt-4 gap-2 text-[#E5E7EB] text-sm font-normal leading-4'>
                     <Image src={shield} alt='shield icon' height={24} width={24}/><span>Seus dados estão seguros</span>
                   </div>
                 }
               </div>
+
             </div>
 
             <Button size={ mediaQuery ? 'lg' : 'default' }> Adicionar cartão</Button>
