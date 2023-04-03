@@ -37,29 +37,29 @@ const inputVariants = cva(
   
   const Input = React.forwardRef<HTMLInputElement, InputProps>(
     ({ className, type='text', label, showLabel='true', variant, ...props }, ref) => {
-      const [value, setValue] = React.useState<string>('')
-      const [error, setError] = React.useState<boolean>(false)
+      // const [value, setValue] = React.useState<string>('')
+      // const [error, setError] = React.useState<boolean>(false)
 
-      const validateInput = () => {
-        const inputLength = value.length
-        return setError(inputLength < 16)
-      }
+      // const validateInput = () => {
+      //   const inputLength = value.length
+      //   return setError(inputLength < 16)
+      // }
 
       return (
         <div ref={ref} className='flex flex-col'>
           <Label.Root
-            className='text-sm text-[#E5E7EB] leading-4 font-semibold mb-1'
+            className='text-sm text-[#E5E7EB] leading-4 font-semibold mb-1 ml-1'
             htmlFor={ label }
           >
             { label }
           </Label.Root>
           <input
-            className={cn(inputVariants({variant, className}), clsx({'border-[#FB7185] border-[2px]': error }))}
+            className={cn(inputVariants({variant, className}), clsx({'border-[#FB7185] border-[2px]': true }))}
             type={ type } 
             id={ label }
-            value={ value }
-            onChange={(e) => setValue(e.target.value) }
-            onBlur={ validateInput }
+            // value={ value }
+            // onChange={ (e) => setValue(e.target.value) }
+            // onBlur={ validateInput }
             {...props}
           />
 

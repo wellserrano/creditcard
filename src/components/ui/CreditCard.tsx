@@ -1,5 +1,6 @@
 import * as React from 'react'
 import Image from 'next/image'
+import clsx from 'clsx'
 
 import { cn } from '../../lib/utils/cn'
 import { cva, VariantProps } from 'class-variance-authority'
@@ -19,10 +20,11 @@ extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof creditCardVari
   side: 'front'|'back'
   cvv?: string
   cardNumber?: string
+  name?: string
 }
 
 const CreditCard = React.forwardRef<HTMLDivElement, CreditCardProps>(
-({ className, cvv, side, cardNumber, ...props }, ref) => {
+({ className, cvv, side, cardNumber, name, ...props }, ref) => {
   const [cardFlag, setCardFlag] = React.useState<'visa'|'master'|'elo'|null>(null)
 
   const visaRegex = /^4[0-9]{12}(?:[0-9]{3})?$/
@@ -65,10 +67,21 @@ const CreditCard = React.forwardRef<HTMLDivElement, CreditCardProps>(
             <Image src={contactless} height={24} width={24} alt='contactless payment symbol' />
           </div>
           <div className='mb-2'>
-            <p className='tracking-[4px] text-[#F9FAFB]'>4716803902&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;</p>
+            <p className='tracking-[4px] text-[#F9FAFB]'>
+              { cardNumber?.padEnd(16, '\u2022').replace(/(.{4})/g, "$1 ").trim() }
+            </p>
           </div>
           <div className='flex w-full justify-between'>
-            <span className='w-3/4 text-[#F9FAFB] opacity-50 font-normal'>Seu nome aqui</span>
+            <span className={ clsx('w-3/4 text-[#F9FAFB] font-normal', 
+              {'opacity-50': name?.length === 0,
+              'opacity-100' : name?.length !== 0})}
+            >
+              {
+                name
+                ? name
+                : 'Seu nome aqui'
+              }
+            </span>
             <span className='text-[#F9FAFB] opacity-50 font-normal tracking-[4px]'>&#x2022;&#x2022;/&#x2022;&#x2022;</span>
           </div>
         </div>
