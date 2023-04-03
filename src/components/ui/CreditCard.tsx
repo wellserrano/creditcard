@@ -5,7 +5,9 @@ import clsx from 'clsx'
 import { cn } from '../../lib/utils/cn'
 import { cva, VariantProps } from 'class-variance-authority'
 
+import elo from 'public/elo.svg'
 import visa from 'public/visa.svg'
+import master from 'public/master.svg'
 import contactless from 'public/ContactlessPayment.svg'
 
 const creditCardVariants = cva(
@@ -26,11 +28,24 @@ extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof creditCardVari
 
 const CreditCard = React.forwardRef<HTMLDivElement, CreditCardProps>(
 ({ className, cvv, side, cardNumber, name, expirationDate, ...props }, ref) => {
-  const [cardFlag, setCardFlag] = React.useState<'visa'|'master'|'elo'|null>(null)
+  const [cardFlag, setCardFlag] = React.useState(visa)
 
-  const visaRegex = /^4[0-9]{12}(?:[0-9]{3})?$/
-  const mastercardRegex = /^5[1-5][0-9]{14}$/
-  const eloRegex = /^(4011|4012|5017|5020|5038|6304|6703|6708|6759|6761|6763)[0-9]{12}(?:[0-9]{3})?$/
+  React.useEffect(() => {
+    if (!cardNumber) return
+
+    const visaRegex = /^4[0-9]{12}(?:[0-9]{3})?$/
+    const mastercardRegex = /^5[1-5][0-9]{14}$/
+    const eloRegex = /^(4011|4012|5017|5020|5038|6304|6703|6708|6759|6761|6763)[0-9]{12}(?:[0-9]{3})?$/
+
+    const isVisa = visaRegex.test(cardNumber)
+    const isMaster = mastercardRegex.test(cardNumber)
+    const isElo = eloRegex.test(cardNumber)
+
+    if (isVisa) setCardFlag(visa)
+    else if (isMaster) setCardFlag(master)
+    else if (isElo) setCardFlag(elo)
+
+  }, [cardFlag, cardNumber])
 
   return (
     <div
@@ -53,7 +68,7 @@ const CreditCard = React.forwardRef<HTMLDivElement, CreditCardProps>(
         ? 
         <div className='absolute z-50 flex flex-col w-full pt-4 px-6 pb-6 '>
           <div className='flex justify-between w-full mb-10'>
-            <Image src={visa} height={32} width={32} alt='card flag' />
+            <Image src={cardFlag} height={32} width={32} alt='card flag' />
             <Image src={contactless} height={24} width={24} alt='contactless payment symbol' />
           </div>
           <div className='mb-2'>
