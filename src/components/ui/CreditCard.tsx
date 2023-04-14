@@ -49,9 +49,11 @@ const CreditCard = React.forwardRef<HTMLDivElement, CreditCardProps>(
 
   return (
     <div
-     className={cn(creditCardVariants({ className }), {
-      'transition-all duration-500 transform -scale-x-100': side === 'back',
-      'transition-all duration-500 transform scale-x-100': side === 'front',
+     className={cn(creditCardVariants({ className }), 
+      'transition-all duration-500 ease-[cubic-bezier(0.157,0.885,0.32,1.275)]',
+     {
+      '-scale-x-100': side === 'back',
+      'scale-x-100': side === 'front',
      })}
      ref={ ref }
     >
@@ -66,7 +68,10 @@ const CreditCard = React.forwardRef<HTMLDivElement, CreditCardProps>(
       {
         side === 'front'
         ? 
-        <div className='absolute z-50 flex flex-col w-full pt-4 px-6 pb-6 '>
+        <div className={clsx('absolute z-50 flex flex-col w-full pt-4 px-6 pb-6', {
+          // @ts-expect-error
+          'hidden': side === 'back'
+        })}>
           <div className='flex justify-between w-full mb-10'>
             <Image src={cardFlag} height={32} width={32} alt='card flag' />
             <Image src={contactless} height={24} width={24} alt='contactless payment symbol' />
@@ -96,11 +101,10 @@ const CreditCard = React.forwardRef<HTMLDivElement, CreditCardProps>(
         </div>
 
         : //conditionally rendering back side of the card
-        <div className={clsx('absolute flex flex-col justify-center items-center gap-12 z-50 w-full',
-          {
-            '-scale-x-100': side === 'back',
-          }
-         )}>
+        <div className={clsx('absolute flex flex-col justify-center items-center gap-12 z-50 w-full -scale-x-100', {
+          //@ts-expect-error
+          'hidden' : side === 'front'
+        })}>
           {/* magnetic bar */}
             <div className='mt-4 bg-[#111827] w-full h-8' />
 
